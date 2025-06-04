@@ -1,0 +1,40 @@
+# === GENERAL ===
+.DS_Store
+*.log
+*.orig.*
+*.tsbuildinfo
+
+# === NODE ===
+node_modules/
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# === ENVIRONMENT ===
+.env
+.env.local
+.env*.local
+
+# === CLIENT (Expo/React Native) ===
+client/.expo/
+client/dist/
+client/web-build/
+client/expo-env.d.ts
+client/.expo-shared/
+
+# === SERVER (Prisma & Node.js) ===
+server/generated/prisma
+server/prisma/dev.db
+server/prisma/dev.db-journal
+server/prisma/migrations/*
+
+# === NATIVE / ANDROID ===
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.kotlin/
+
+# === METRO ===
+.metro-health-check*
