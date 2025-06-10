@@ -37,7 +37,7 @@ export default function Home() {
     };
 
     loadProfile();
-  }, []);
+  }, [router]);
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("token");
