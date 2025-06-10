@@ -37,3 +37,21 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: "Error en login" });
   }
 };
+
+exports.profile = async (req, res) => {
+  try {
+    const user = await prisma.usuario.findUnique({
+      where: { id: req.user.id },
+      select: { id: true, email: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error("ERROR PERFIL:", err);
+    res.status(500).json({ error: "Error al obtener perfil" });
+  }
+};

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput, Button, Alert, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { API_URL } from "../constants/config";
@@ -31,21 +31,38 @@ export default function Login() {
   };
 
   return (
-    <View style={{ padding: 20, backgroundColor: "#fff", flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: "#fff",
+        ...(Platform.OS === "web"
+          ? { boxShadow: "0 0 10px rgba(0,0,0,0.1)" }
+          : { shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 10 }),
+      }}
+    >
       <Text>Email:</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
-        style={{ borderBottomWidth: 1, marginBottom: 12 }}
+        style={{
+          borderBottomWidth: 1,
+          marginBottom: 12,
+          paddingVertical: 4,
+        }}
       />
       <Text>Contraseña:</Text>
       <TextInput
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={{ borderBottomWidth: 1, marginBottom: 20 }}
+        style={{
+          borderBottomWidth: 1,
+          marginBottom: 20,
+          paddingVertical: 4,
+        }}
       />
       <Button title="Iniciar sesión" onPress={handleLogin} />
     </View>
