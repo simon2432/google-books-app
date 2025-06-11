@@ -10,7 +10,6 @@ app.use(express.json());
 // Rutas
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/libros", require("./routes/bookRoutes"));
-app.use("/api/favoritos", require("./routes/favoriteRoutes"));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

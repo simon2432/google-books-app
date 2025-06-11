@@ -60,7 +60,7 @@ export default function Home() {
   const updateFavorite = async (id, comentario) => {
     const token = await AsyncStorage.getItem("token");
     try {
-      await fetch(`${API_URL}/api/libros/${id}`, {
+      const res = await fetch(`${API_URL}/api/libros/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -68,6 +68,11 @@ export default function Home() {
         },
         body: JSON.stringify({ comentario }),
       });
+      if (res.ok) {
+        setFavorites((prev) =>
+          prev.map((b) => (b.id === id ? { ...b, comentario } : b))
+        );
+      }
     } catch (err) {
       console.error("ERROR ACTUALIZAR FAVORITO:", err);
     }
