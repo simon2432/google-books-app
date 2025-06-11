@@ -8,6 +8,8 @@ import {
   Text,
   ScrollView,
   Alert,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../constants/config";
@@ -17,6 +19,7 @@ export default function BookSearch({ onAddFavorite }) {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState({});
+  const [selected, setSelected] = useState(null);
 
   const handleCommentChange = (id, text) => {
     setComments((prev) => ({ ...prev, [id]: text }));
@@ -110,8 +113,9 @@ export default function BookSearch({ onAddFavorite }) {
       {loading && <ActivityIndicator style={{ marginTop: 8 }} />}
       <ScrollView style={{ marginTop: 12, maxHeight: 300 }}>
         {results.map((book) => (
-          <View
+          <TouchableOpacity
             key={book.id}
+            onPress={() => setSelected(book)}
             style={{
               flexDirection: "row",
               marginBottom: 12,
@@ -129,30 +133,75 @@ export default function BookSearch({ onAddFavorite }) {
             <View style={{ flex: 1 }}>
               <Text style={{ fontWeight: "bold" }}>{book.title}</Text>
               {!!book.author && <Text>{book.author}</Text>}
-              {!!book.description && (
-                <Text numberOfLines={3} style={{ fontSize: 12, marginTop: 4 }}>
-                  {book.description}
-                </Text>
-              )}
-              <TextInput
-                value={comments[book.id] || ""}
-                onChangeText={(text) => handleCommentChange(book.id, text)}
-                placeholder="Comentario"
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#ccc",
-                  padding: 4,
-                  marginTop: 4,
-                }}
-              />
-              <Button
-                title="Agregar a favoritos"
-                onPress={() => saveBookToFavorites(book)}
-              />
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
+
+      <Modal visible={!!selected} animationType="slide" transparent>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              width: "90%",
+              maxHeight: "80%",
+              backgroundColor: "#fff",
+              padding: 16,
+              borderRadius: 8,
+            }}
+          >
+            {selected && (
+              <ScrollView>
+                {selected.image && (
+                  <Image
+                    source={{ uri: selected.image }}
+                    style={{ width: 120, height: 180, alignSelf: "center" }}
+                  />
+                )}
+                <Text
+                  style={{ fontWeight: "bold", fontSize: 18, marginTop: 8 }}
+                >
+                  {selected.title}
+                </Text>
+                {!!selected.author && (
+                  <Text style={{ marginBottom: 8 }}>{selected.author}</Text>
+                )}
+                {!!selected.description && (
+                  <Text style={{ marginBottom: 12 }}>
+                    {selected.description}
+                  </Text>
+                )}
+                <TextInput
+                  value={comments[selected.id] || ""}
+                  onChangeText={(t) => handleCommentChange(selected.id, t)}
+                  placeholder="Comentario"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    padding: 4,
+                    marginBottom: 12,
+                  }}
+                />
+                <Button
+                  title="Agregar a favoritos"
+                  onPress={() => {
+                    saveBookToFavorites(selected);
+                    setSelected(null);
+                  }}
+                />
+                <View style={{ height: 8 }} />
+                <Button title="Cerrar" onPress={() => setSelected(null)} />
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
