@@ -55,7 +55,7 @@ export default function Home() {
     };
 
     loadProfileAndFavorites();
-  }, []);
+  }, [router]);
 
   const updateFavorite = async (id, comentario) => {
     const token = await AsyncStorage.getItem("token");
@@ -124,7 +124,9 @@ export default function Home() {
         </View>
       </View>
 
-      <BookSearch />
+      <BookSearch
+        onAddFavorite={(newBook) => setFavorites((prev) => [newBook, ...prev])}
+      />
 
       <FavoriteList
         books={favorites}
