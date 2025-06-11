@@ -5,6 +5,14 @@ exports.guardarLibro = async (req, res) => {
   const { googleBookId, titulo, autores, imagenUrl, comentario } = req.body;
 
   try {
+    const existente = await prisma.libroGuardado.findFirst({
+      where: { usuarioId: req.user.id, googleBookId },
+    });
+
+    if (existente) {
+      return res.status(200).json({ message: "Libro ya guardado", book: existente });
+    }
+
     const nuevoLibro = await prisma.libroGuardado.create({
       data: {
         googleBookId,
@@ -16,7 +24,7 @@ exports.guardarLibro = async (req, res) => {
       },
     });
 
-    res.status(201).json(nuevoLibro);
+    res.status(201).json({ message: "Libro guardado", book: nuevoLibro });
   } catch (err) {
     console.error("ERROR GUARDAR LIBRO:", err);
     res.status(500).json({ error: "Error al guardar libro" });
@@ -49,5 +57,22 @@ exports.eliminarLibro = async (req, res) => {
   } catch (err) {
     console.error("ERROR ELIMINAR LIBRO:", err);
     res.status(500).json({ error: "Error al eliminar libro" });
+  }
+};
+
+exports.actualizarLibro = async (req, res) => {
+  const { id } = req.params;
+  const { comentario } = req.body;
+
+  try {
+    const libroActualizado = await prisma.libroGuardado.update({
+      where: { id: parseInt(id) },
+      data: { comentario },
+    });
+
+    res.json(libroActualizado);
+  } catch (err) {
+    console.error("ERROR ACTUALIZAR LIBRO:", err);
+    res.status(500).json({ error: "Error al actualizar libro" });
   }
 };
