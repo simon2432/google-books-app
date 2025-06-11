@@ -5,11 +5,13 @@ const {
   guardarLibro,
   obtenerLibros,
   eliminarLibro,
+  actualizarLibro,
 } = require("../controllers/bookController");
 
 // Rutas protegidas
 router.post("/", auth, guardarLibro);
 router.get("/", auth, obtenerLibros);
 router.delete("/:id", auth, eliminarLibro);
+router.put("/:id", auth, actualizarLibro);
 
 module.exports = router;
