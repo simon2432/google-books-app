@@ -12,7 +12,6 @@ model Usuario {
   email     String           @unique
   password  String
   libros    LibroGuardado[]
-  favoritos Libro[]
 }
 
 model LibroGuardado {
@@ -25,17 +24,8 @@ model LibroGuardado {
   imagenUrl      String?
   comentario     String?
   fechaGuardado  DateTime @default(now())
-}
 
-model Libro {
-  id          Int      @id @default(autoincrement())
-  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId   Int
-  title       String
-  author      String
-  description String?
-  imageUrl    String?
-  createdAt   DateTime @default(now())
+  @@unique([usuarioId, googleBookId])
 }
 
 
