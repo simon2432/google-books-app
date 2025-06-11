@@ -16,6 +16,11 @@ export default function BookSearch({ onAddFavorite }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [comments, setComments] = useState({});
+
+  const handleCommentChange = (id, text) => {
+    setComments((prev) => ({ ...prev, [id]: text }));
+  };
 
   const searchBooks = async () => {
     if (!query.trim()) return;
@@ -56,17 +61,18 @@ export default function BookSearch({ onAddFavorite }) {
     if (!token) return;
 
     try {
-      const res = await fetch(`${API_URL}/api/favoritos`, {
+      const res = await fetch(`${API_URL}/api/libros`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title: book.title,
-          author: book.author,
-          description: book.description,
-          imageUrl: book.image,
+          googleBookId: book.id,
+          titulo: book.title,
+          autores: book.author,
+          imagenUrl: book.image,
+          comentario: comments[book.id] || "",
         }),
       });
 
@@ -77,6 +83,7 @@ export default function BookSearch({ onAddFavorite }) {
       } else if (res.status === 201) {
         Alert.alert("Éxito", "Libro guardado en favoritos.");
         onAddFavorite && onAddFavorite(data.book); // Actualizar lista en Home
+        setComments((prev) => ({ ...prev, [book.id]: "" }));
       } else {
         throw new Error(data?.error || "Error desconocido");
       }
@@ -127,6 +134,17 @@ export default function BookSearch({ onAddFavorite }) {
                   {book.description}
                 </Text>
               )}
+              <TextInput
+                value={comments[book.id] || ""}
+                onChangeText={(text) => handleCommentChange(book.id, text)}
+                placeholder="Comentario"
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  padding: 4,
+                  marginTop: 4,
+                }}
+              />
               <Button
                 title="Agregar a favoritos"
                 onPress={() => saveBookToFavorites(book)}
